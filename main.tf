@@ -103,15 +103,6 @@ resource "aws_kinesis_firehose_delivery_stream" "metrics" {
   name        = var.name
   destination = "http_endpoint"
 
-  s3_configuration {
-    role_arn   = aws_iam_role.firehose_to_s3.arn
-    bucket_arn = aws_s3_bucket.metric_stream.arn
-
-    buffer_size        = var.s3_buffer_size
-    buffer_interval    = var.s3_buffer_interval
-    compression_format = var.s3_compression_format
-  }
-
   http_endpoint_configuration {
     url  = "${var.honeycomb_api_host}/1/kinesis_events/${var.honeycomb_dataset_name}"
     name = "Honeycomb-${var.honeycomb_dataset_name}"
@@ -121,6 +112,15 @@ resource "aws_kinesis_firehose_delivery_stream" "metrics" {
     buffering_interval = var.http_buffering_interval
     role_arn           = aws_iam_role.firehose_to_s3.arn
     s3_backup_mode     = var.s3_backup_mode
+
+    s3_configuration {
+      role_arn   = aws_iam_role.firehose_to_s3.arn
+      bucket_arn = aws_s3_bucket.metric_stream.arn
+
+      buffering_size     = var.s3_buffer_size
+      buffering_interval = var.s3_buffer_interval
+      compression_format = var.s3_compression_format
+    }
 
     request_configuration {
       content_encoding = "GZIP"
