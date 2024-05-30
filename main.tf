@@ -94,11 +94,6 @@ resource "aws_s3_bucket" "metric_stream" {
   force_destroy = var.s3_force_destroy
 }
 
-resource "aws_s3_bucket_acl" "metric_stream" {
-  bucket = aws_s3_bucket.metric_stream.id
-  acl    = "private"
-}
-
 resource "aws_kinesis_firehose_delivery_stream" "metrics" {
   name        = var.name
   destination = "http_endpoint"
